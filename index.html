@@ -499,6 +499,220 @@
             font-size: 0.9rem;
         }
         
+        /* Sacrifice Protocol Section */
+        .sacrifice-protocol {
+            background: linear-gradient(135deg, rgba(156, 39, 176, 0.1) 0%, rgba(255, 87, 34, 0.1) 100%);
+            border-radius: 20px;
+            padding: 60px 30px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .sacrifice-protocol::before {
+            content: '🔥';
+            position: absolute;
+            font-size: 200px;
+            opacity: 0.05;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 0;
+        }
+        
+        .sacrifice-intro {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 50px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .sacrifice-intro p {
+            font-size: 1.3rem;
+            line-height: 1.8;
+            color: var(--light);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            margin-bottom: 15px;
+        }
+        
+        .split-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 50px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .split-card {
+            background-color: rgba(30, 30, 42, 0.9);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            border: 3px solid;
+            transition: all 0.3s;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .split-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+        }
+        
+        .split-card.fire {
+            border-color: var(--primary);
+        }
+        
+        .split-card.family {
+            border-color: var(--accent);
+        }
+        
+        .split-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, transparent, currentColor, transparent);
+        }
+        
+        .split-card.fire::before {
+            color: var(--primary);
+        }
+        
+        .split-card.family::before {
+            color: var(--accent);
+        }
+        
+        .split-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 0 20px currentColor);
+        }
+        
+        .split-card.fire .split-icon {
+            color: var(--primary);
+        }
+        
+        .split-card.family .split-icon {
+            color: var(--accent);
+        }
+        
+        .split-percentage {
+            font-family: 'Luckiest Guy', cursive;
+            font-size: 4rem;
+            color: white;
+            text-shadow: 3px 3px 0 rgba(0,0,0,0.3);
+            margin-bottom: 15px;
+        }
+        
+        .split-title {
+            font-family: 'Bangers', cursive;
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+        
+        .split-card.fire .split-title {
+            color: var(--primary);
+        }
+        
+        .split-card.family .split-title {
+            color: var(--accent);
+        }
+        
+        .split-description {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #ddd;
+            margin-bottom: 20px;
+        }
+        
+        .split-details {
+            background-color: rgba(0,0,0,0.3);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .split-details h4 {
+            font-family: 'Bangers', cursive;
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: white;
+        }
+        
+        .split-details p {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: #ccc;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 40px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .stat-box {
+            background-color: rgba(30, 30, 42, 0.9);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            border: 2px solid var(--secondary);
+            transition: all 0.3s;
+        }
+        
+        .stat-box:hover {
+            transform: scale(1.05);
+            border-color: var(--primary);
+        }
+        
+        .stat-label {
+            font-family: 'Bangers', cursive;
+            font-size: 1.1rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        
+        .stat-value {
+            font-family: 'Luckiest Guy', cursive;
+            font-size: 1.8rem;
+            color: white;
+            text-shadow: 2px 2px 0 rgba(0,0,0,0.3);
+        }
+        
+        .transparency-link {
+            text-align: center;
+            margin-top: 30px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .transparency-link a {
+            font-family: 'Bangers', cursive;
+            font-size: 1.3rem;
+            color: var(--accent);
+            text-decoration: none;
+            padding: 15px 30px;
+            border: 2px solid var(--accent);
+            border-radius: 10px;
+            display: inline-block;
+            transition: all 0.3s;
+        }
+        
+        .transparency-link a:hover {
+            background-color: var(--accent);
+            color: white;
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(76, 175, 80, 0.4);
+        }
+        
         @media (max-width: 768px) {
             .hero h1 {
                 font-size: 2.5rem;
@@ -542,6 +756,15 @@
             .tokenomics-card, .step-card {
                 min-width: 100%;
             }
+            
+            .split-container {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            
+            .sacrifice-intro p {
+                font-size: 1.1rem;
+            }
         }
     </style>
 </head>
@@ -553,6 +776,7 @@
                 <ul>
                     <li><a href="#about">About</a></li>
                     <li><a href="#tokenomics">Tokenomics</a></li>
+                    <li><a href="#sacrifice">Sacrifice</a></li>
                     <li><a href="#roadmap">Roadmap</a></li>
                     <li><a href="#how-to-buy">How to Buy</a></li>
                 </ul>
@@ -613,6 +837,65 @@
                 <div class="tokenomics-card">
                     <h3>Network</h3>
                     <p>Solana</p>
+                </div>
+            </div>
+        </section>
+        
+        <section id="sacrifice">
+            <h2>The Sacrifice Protocol</h2>
+            <div class="sacrifice-protocol">
+                <div class="sacrifice-intro">
+                    <p>Every transaction feeds the ritual. Every fee becomes an offering.</p>
+                    <p>Half burns in the fire — fueling buybacks that strengthen the cult.</p>
+                    <p>Half flows to the faithful — rewarding random holders through divine lottery.</p>
+                    <p><strong>This is the covenant: Half for the fire. Half for the family.</strong></p>
+                </div>
+                
+                <div class="split-container">
+                    <div class="split-card fire">
+                        <div class="split-icon">🔥</div>
+                        <div class="split-percentage">50%</div>
+                        <h3 class="split-title">For the Fire</h3>
+                        <p class="split-description">Every pump.fun creator fee is automatically split. Half is reserved for manual token buybacks.</p>
+                        <div class="split-details">
+                            <h4>How Buybacks Work:</h4>
+                            <p>SOL from creator fees stays in the treasury. When the market bleeds, we strike — buying $YMN from the open market, reducing supply, supporting price. The tokens bought are locked forever or burned. This is the fire that forges strength from the ashes.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="split-card family">
+                        <div class="split-icon">👥</div>
+                        <div class="split-percentage">50%</div>
+                        <h3 class="split-title">For the Family</h3>
+                        <p class="split-description">The other half? Sent directly to random holders. No bias. No favorites. Pure lottery.</p>
+                        <div class="split-details">
+                            <h4>The Airdrop Lottery:</h4>
+                            <p>Our automated protocol scans all $YMN holders, filters out bots and paper hands, and randomly selects winners. SOL arrives in your wallet. No action needed. Just hold, and the brotherhood might bless you. Every cycle, new winners. Every holder has a chance.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <div class="stat-label">Total Buybacks</div>
+                        <div class="stat-value">Coming Soon</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Total Distributed</div>
+                        <div class="stat-value">Coming Soon</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Last Winner</div>
+                        <div class="stat-value">Coming Soon</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">Next Ritual</div>
+                        <div class="stat-value">Coming Soon</div>
+                    </div>
+                </div>
+                
+                <div class="transparency-link">
+                    <a href="#" target="_blank">View Full Transaction History →</a>
                 </div>
             </div>
         </section>
@@ -678,6 +961,7 @@
                 <a href="#">Home</a>
                 <a href="#about">About</a>
                 <a href="#tokenomics">Tokenomics</a>
+                <a href="#sacrifice">Sacrifice</a>
                 <a href="#roadmap">Roadmap</a>
                 <a href="#how-to-buy">How to Buy</a>
             </div>

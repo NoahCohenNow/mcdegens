@@ -1,0 +1,21 @@
+{
+  "name": "ymn-brotherhood-protocol",
+  "version": "1.0.0",
+  "description": "Automated buyback and airdrop system for $YMN token - Half for the fire, half for the family",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js"
+  },
+  "keywords": ["solana", "pump.fun", "buyback", "airdrop", "YMN"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@solana/web3.js": "^1.95.8",
+    "@solana/spl-token": "^0.4.9",
+    "dotenv": "^16.4.7",
+    "axios": "^1.7.9",
+    "bs58": "^6.0.0"
+  }
+}
