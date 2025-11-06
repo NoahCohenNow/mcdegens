@@ -4,6 +4,9 @@ import { getAssociatedTokenAddress, createTransferInstruction, getAccount } from
 import { logger } from './utils/logger.js';
 import { getAirdropWinners } from './utils/holders.js';
 import bs58 from 'bs58';
+import fs from 'fs';
+import path from 'path';
+import simpleGit from 'simple-git';
 
 dotenv.config();
 
@@ -26,12 +29,90 @@ const CONFIG = {
 let connection;
 let creatorKeypair;
 
+// Stats tracking
+const STATS_FILE = 'stats.json';
+let stats = {
+  totalBuybacksSOL: 0,
+  totalDistributedSOL: 0,
+  totalCycles: 0,
+  lastWinner: null,
+  lastCycleTime: null,
+  recentTransactions: []
+};
+
+/**
+ * Load stats from file
+ */
+function loadStats() {
+  try {
+    if (fs.existsSync(STATS_FILE)) {
+      const data = fs.readFileSync(STATS_FILE, 'utf8');
+      stats = JSON.parse(data);
+      logger.info('Stats loaded from file');
+    }
+  } catch (error) {
+    logger.warn('Could not load stats, starting fresh', { error: error.message });
+  }
+}
+
+/**
+ * Save stats to file and push to GitHub
+ */
+async function saveStats() {
+  try {
+    // Save to file
+    fs.writeFileSync(STATS_FILE, JSON.stringify(stats, null, 2));
+    logger.success('Stats saved to stats.json');
+    
+    // Push to GitHub if enabled
+    if (process.env.GITHUB_AUTO_PUSH === 'true') {
+      await pushStatsToGitHub();
+    }
+  } catch (error) {
+    logger.error('Failed to save stats', { error: error.message });
+  }
+}
+
+/**
+ * Push stats.json to GitHub
+ */
+async function pushStatsToGitHub() {
+  try {
+    const git = simpleGit();
+    
+    // Configure git with GitHub token
+    if (process.env.GITHUB_TOKEN) {
+      const repo = process.env.GITHUB_REPO; // format: username/repo-name
+      const remoteUrl = `https://${process.env.GITHUB_TOKEN}@github.com/${repo}.git`;
+      
+      // Check if remote exists, if not add it
+      const remotes = await git.getRemotes();
+      if (!remotes.find(r => r.name === 'origin')) {
+        await git.addRemote('origin', remoteUrl);
+      }
+    }
+    
+    // Add, commit, and push stats.json
+    await git.add('stats.json');
+    await git.commit(`Update stats: ${new Date().toISOString()}`, ['stats.json']);
+    await git.push('origin', process.env.GITHUB_BRANCH || 'main');
+    
+    logger.success('Stats pushed to GitHub');
+  } catch (error) {
+    logger.error('Failed to push stats to GitHub', { error: error.message });
+    // Don't throw - stats are still saved locally
+  }
+}
+
 /**
  * Initialize Solana connection and wallet
  */
 async function initialize() {
   logger.info('🔥 BROTHERHOOD PROTOCOL INITIALIZING 🔥');
   logger.info('Half for the fire, half for the family');
+  
+  // Load existing stats
+  loadStats();
   
   // Validate configuration
   if (!CONFIG.rpcUrl || !CONFIG.creatorPrivateKey || !CONFIG.tokenMint) {
@@ -99,6 +180,9 @@ async function reserveForBuyback(solAmount) {
     logger.info(`Wallet: ${creatorKeypair.publicKey.toBase58()}`);
     logger.info(`This SOL remains in your wallet for manual token buybacks`);
     
+    // Update stats
+    stats.totalBuybacksSOL += solAmount;
+    
     // Log for transparency
     return {
       success: true,
@@ -161,6 +245,22 @@ async function executeAirdrops(solAmount) {
         );
 
         results.push({ winner: winner.address, signature, amount: amountPerWinner });
+        
+        // Update stats for each winner
+        stats.totalDistributedSOL += amountPerWinner;
+        stats.lastWinner = winner.address;
+        
+        // Add to recent transactions (keep last 10)
+        stats.recentTransactions.unshift({
+          type: 'airdrop',
+          winner: winner.address,
+          amount: amountPerWinner,
+          signature,
+          timestamp: new Date().toISOString()
+        });
+        if (stats.recentTransactions.length > 10) {
+          stats.recentTransactions = stats.recentTransactions.slice(0, 10);
+        }
       } catch (error) {
         logger.error(`Failed to send airdrop to ${winner.address}`, { error: error.message });
       }
@@ -217,6 +317,13 @@ async function processCreatorFees() {
 
     // Execute airdrops (sends from wallet)
     await executeAirdrops(airdropAmount);
+
+    // Update cycle stats
+    stats.totalCycles++;
+    stats.lastCycleTime = new Date().toISOString();
+    
+    // Save stats to file
+    saveStats();
 
     logger.success('✅ BROTHERHOOD PROTOCOL CYCLE COMPLETE ✅');
     logger.info(`Remaining in wallet for buybacks: ~${buybackAmount.toFixed(4)} SOL`);

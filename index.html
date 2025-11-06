@@ -968,6 +968,70 @@
             <p class="copyright">Copyright © 2023 YOO MY NIGGA ($YMN). All rights reserved.</p>
         </div>
     </footer>
+    
+    <script>
+        // Configuration - UPDATE THIS WITH YOUR GITHUB INFO
+        const GITHUB_REPO = 'klingon-droid/yomyninja'; // Change to your repo
+        const GITHUB_BRANCH = 'main'; // Change if using different branch
+        const STATS_URL = `https://raw.githubusercontent.com/${GITHUB_REPO}/${GITHUB_BRANCH}/stats.json`;
+        
+        // Fetch and display live stats
+        async function loadStats() {
+            try {
+                const response = await fetch(STATS_URL + '?cache=' + Date.now());
+                if (!response.ok) throw new Error('Stats not available yet');
+                
+                const data = await response.json();
+                
+                // Update stat values
+                document.querySelector('.stat-box:nth-child(1) .stat-value').textContent = 
+                    data.totalBuybacksSOL ? `${data.totalBuybacksSOL.toFixed(4)} SOL` : 'Coming Soon';
+                
+                document.querySelector('.stat-box:nth-child(2) .stat-value').textContent = 
+                    data.totalDistributedSOL ? `${data.totalDistributedSOL.toFixed(4)} SOL` : 'Coming Soon';
+                
+                document.querySelector('.stat-box:nth-child(3) .stat-value').textContent = 
+                    data.lastWinner ? `${data.lastWinner.slice(0, 4)}...${data.lastWinner.slice(-4)}` : 'Coming Soon';
+                
+                // Calculate next ritual time
+                if (data.lastCycleTime) {
+                    const lastCycle = new Date(data.lastCycleTime);
+                    const checkInterval = 10; // from .env CHECK_INTERVAL_MINUTES
+                    const nextCycle = new Date(lastCycle.getTime() + checkInterval * 60 * 1000);
+                    const now = new Date();
+                    
+                    if (nextCycle > now) {
+                        const minutesLeft = Math.ceil((nextCycle - now) / 1000 / 60);
+                        document.querySelector('.stat-box:nth-child(4) .stat-value').textContent = 
+                            `${minutesLeft} min`;
+                    } else {
+                        document.querySelector('.stat-box:nth-child(4) .stat-value').textContent = 'Any moment...';
+                    }
+                } else {
+                    document.querySelector('.stat-box:nth-child(4) .stat-value').textContent = 'Coming Soon';
+                }
+                
+                // Update transparency link if we have transactions
+                if (data.recentTransactions && data.recentTransactions.length > 0) {
+                    const firstTx = data.recentTransactions[0];
+                    if (firstTx.signature) {
+                        document.querySelector('.transparency-link a').href = 
+                            `https://solscan.io/tx/${firstTx.signature}`;
+                    }
+                }
+                
+            } catch (error) {
+                console.log('Stats not available yet:', error.message);
+                // Keep showing "Coming Soon" placeholders
+            }
+        }
+        
+        // Load stats immediately
+        loadStats();
+        
+        // Auto-refresh every 30 seconds
+        setInterval(loadStats, 30000);
+    </script>
 </body>
 </html>
 ```
