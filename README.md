@@ -1,16 +1,16 @@
-# 🔥 YMN Brotherhood Protocol
+# 🍔 McDegens Protocol
 
-**Half for the fire, half for the family.**
+**Time to clock in. We're our own best customer.**
 
-Automated buyback and airdrop system for $YMN token that processes Pump.fun creator fees.
+Automated buyback and airdrop system for $MCDGN token that processes Pump.fun creator fees.
 
 ## 🎯 What It Does
 
 This tool automatically:
 1. **Monitors** your Pump.fun creator fee wallet every X minutes
 2. **Splits** collected fees 50/50:
-   - 🔥 **50% for Buybacks** - Market buys $YMN to support price floor
-   - 👥 **50% for Airdrops** - Rewards random qualified token holders
+   - 🔥 **50% for Buybacks** - Reserved for buying back $MCDGN to support the chart
+   - 👥 **50% for Airdrops** - Rewards random qualified token holders (our employees)
 3. **Logs** all transactions for complete transparency
 
 ## 🚀 Setup
@@ -35,7 +35,7 @@ Edit `.env` with your values:
 # Required
 HELIUS_RPC_URL=https://mainnet.helius-rpc.com/?api-key=YOUR_HELIUS_API_KEY
 CREATOR_WALLET_PRIVATE_KEY=your_base58_private_key_here
-YMN_TOKEN_MINT=your_ymn_token_mint_address_here
+YMN_TOKEN_MINT=your_mcdgn_token_mint_address_here
 
 # Optional - defaults shown
 CHECK_INTERVAL_MINUTES=10
@@ -69,6 +69,20 @@ After creating your token on Pump.fun:
 2. Copy the mint address
 3. Paste into `YMN_TOKEN_MINT`
 
+### 6. Enable GitHub Auto-Push (Optional)
+
+To automatically publish stats to your landing page:
+
+```env
+GITHUB_AUTO_PUSH=true
+GITHUB_TOKEN=your_github_personal_access_token
+GITHUB_REPO=username/repo-name
+GITHUB_BRANCH=main
+```
+
+Get a GitHub token at: Settings → Developer settings → Personal access tokens → Generate new token (classic)
+- Select scope: `repo` (Full control of private repositories)
+
 ## ▶️ Running
 
 ### Development Mode (with auto-restart)
@@ -86,7 +100,7 @@ npm start
 ### Run in Background (Linux/Mac)
 
 ```bash
-nohup npm start > brotherhood.log 2>&1 &
+nohup npm start > mcdegens.log 2>&1 &
 ```
 
 ### Stop Background Process
@@ -104,7 +118,7 @@ pkill -f "node index.js"
 
 ### Buybacks (50%)
 - **Reserves** 50% of fees in your creator wallet
-- You manually use this SOL to buyback $YMN tokens
+- You manually use this SOL to buyback $MCDGN tokens
 - SOL stays in wallet - script just logs the amount reserved
 - Provides transparency on how much is available for buybacks
 
@@ -112,14 +126,22 @@ pkill -f "node index.js"
 - Fetches all token holders via Helius
 - Filters by minimum balance (`MIN_HOLDER_BALANCE`)
 - Excludes creator wallet
-- Randomly selects `NUMBER_OF_WINNERS_PER_ROUND` winners
+- Randomly selects `NUMBER_OF_WINNERS_PER_ROUND` winners (our employees)
 - Distributes SOL equally to winners
 - Logs all transactions with Solscan links
+
+### Stats Tracking
+- Updates `stats.json` after each cycle
+- Tracks total buybacks, distributions, winners, and recent transactions
+- Auto-pushes to GitHub if configured
+- Landing page fetches and displays stats in real-time
 
 ## 📁 Project Structure
 
 ```
+├── index.html            # McDegens landing page
 ├── index.js              # Main protocol logic
+├── stats.json            # Live stats (auto-updated)
 ├── utils/
 │   ├── logger.js         # Logging system
 │   └── holders.js        # Holder snapshot & selection
@@ -154,12 +176,38 @@ Each log includes:
 | `MIN_HOLDER_BALANCE` | 100 | Minimum tokens to qualify |
 | `SLIPPAGE_BPS` | 300 | Slippage tolerance (3%) |
 
+## 🌐 Landing Page
+
+The `index.html` file is a static landing page that:
+- Displays live stats from `stats.json`
+- Shows total buybacks, distributions, and last winner
+- Links to Solscan for full transaction history
+- Features neo-brutalist design with McDonald's-inspired branding
+
+### Deploying the Landing Page
+
+1. **GitHub Pages** (Free):
+   - Push to GitHub
+   - Settings → Pages → Source: main branch
+   - Your site will be at: `https://username.github.io/repo-name`
+
+2. **Vercel** (Free):
+   ```bash
+   npm install -g vercel
+   vercel
+   ```
+
+3. **Netlify** (Free):
+   - Drag and drop the repo folder to [netlify.com/drop](https://netlify.com/drop)
+
+The landing page automatically refreshes stats every 30 seconds.
+
 ## ⚠️ Important Notes
 
 ### Manual Buybacks
 The buyback portion (50%) stays in your creator wallet:
 - Script logs how much SOL is reserved for buybacks
-- You manually use this SOL to buyback $YMN tokens on pump.fun or DEX
+- You manually use this SOL to buyback $MCDGN tokens on pump.fun or DEX
 - Provides flexibility and control over timing/price
 - Keeps process transparent for community
 
@@ -173,6 +221,7 @@ The buyback portion (50%) stays in your creator wallet:
 - All transactions are logged with signatures
 - Check logs in `logs/` folder
 - Share Solscan links with community
+- Stats are public on your landing page
 - Consider posting weekly reports
 
 ## 🛠️ Troubleshooting
@@ -195,17 +244,23 @@ The buyback portion (50%) stays in your creator wallet:
 - Lower `MIN_HOLDER_BALANCE`
 - Wait for more holders to accumulate
 
+### Stats not updating on landing page
+- Ensure `stats.json` exists and is being updated
+- Check GitHub auto-push is working (if enabled)
+- Verify landing page is fetching from correct URL
+
 ## 📜 License
 
 MIT
 
-## 🤝 Brotherhood
+## 🍟 McDegens
 
-YOO YOO MY NIGGA
+Welcome to your new shift.
 
-For the broken, the bagholders, the forgotten dreamers.  
-Half for the fire, half for the family.
+Did Bitcoin send your portfolio to the dumpster? Did Solana forget to "sol" up?
+
+It's okay. We've got a new position for you at McDegens. 50% of creator fees get airdropped to our loyal employees (holders). 50% goes to buying back the chart. We're our own best customer.
 
 ---
 
-*This tool is for the $YMN community. Use responsibly and transparently.*
+*This tool is for the $MCDGN community. Use responsibly and transparently.*

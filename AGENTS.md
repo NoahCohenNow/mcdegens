@@ -1,7 +1,7 @@
 # AGENTS.md
 
 ## Project Overview
-Static HTML landing page for $YMN (YOO MY NIGGA) - a Solana-based meme token. Single-file architecture with embedded CSS and inline SVG.
+Static HTML landing page for McDegens ($MCDGN) - a McDonald's-inspired Solana memecoin. Neo-brutalist design with Tailwind CSS and inline SVG logo.
 
 ## Build/Test Commands
 - No build process required - static HTML
@@ -9,16 +9,16 @@ Static HTML landing page for $YMN (YOO MY NIGGA) - a Solana-based meme token. Si
 
 ## Architecture
 - Single-page application: index.html
-- No external dependencies or build tools
-- All styles embedded in `<style>` tag
-- Inline SVG for cult symbol graphic
+- Tailwind CSS via CDN
+- Inter font from Google Fonts
+- Inline SVG for stylized 'M' logo
 
 ## Code Style & Conventions
-- **CSS Variables**: Use CSS custom properties in `:root` (--primary, --secondary, --dark, --light, --accent)
-- **Font Stack**: 'Bangers', 'Luckiest Guy', 'Permanent Marker' from Google Fonts for headers/CTAs
-- **Colors**: Primary #FF5722, Secondary #9C27B0, Dark #1E1E2A, Light #FFF9C4, Accent #4CAF50
-- **Animations**: Use `transition: all 0.3s` for hover effects; `transform: rotate()` for playful tilts
-- **Spacing**: Sections use 80px vertical padding; cards use 30px internal padding
-- **Responsive**: Media query breakpoint at 768px for mobile
-- **Effects**: Drop shadows, text shadows, gradients, and clip-path for visual depth
-- **Naming**: BEM-like class names (e.g., roadmap-item, roadmap-content, step-card)
+- **Framework**: Tailwind CSS utility classes
+- **Font Stack**: 'Inter' (weights 400, 500, 700, 900) from Google Fonts
+- **Colors**: Red-600 background, Yellow-400 accents, Black borders, White content boxes
+- **Design Language**: Neo-brutalist - thick black borders, hard shadows (e.g., shadow-[8px_8px_0px_#000])
+- **Animations**: Translate on hover for button interaction (hover:translate-x-1 hover:translate-y-1)
+- **Responsive**: Tailwind breakpoints (md: prefix for tablet/desktop)
+- **Typography**: Font-black for headings, font-bold/font-medium for body, uppercase for CTAs
+- **Naming**: Standard Tailwind utility classes
