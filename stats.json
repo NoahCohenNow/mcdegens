@@ -4,5 +4,9 @@
   "totalCycles": 13,
   "lastWinner": null,
   "lastCycleTime": "2025-11-14T13:37:17.582Z",
-  "recentTransactions": []
+  "recentTransactions": [],
+  "totalDraws": null,
+  "lastDrawTime": "2025-11-14T13:38:15.450Z",
+  "nextDrawTime": "2025-11-14T13:48:15.450Z",
+  "averageWinAmount": 0
 }
