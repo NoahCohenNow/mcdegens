@@ -32,11 +32,14 @@ let creatorKeypair;
 // Stats tracking
 const STATS_FILE = 'stats.json';
 let stats = {
-  totalBuybacksSOL: 0,
   totalDistributedSOL: 0,
-  totalCycles: 0,
+  totalWinners: 0,
+  totalDraws: 0,
+  averageWinAmount: 0,
+  lastDrawTime: null,
+  nextDrawTime: null,
   lastWinner: null,
-  lastCycleTime: null,
+  currentPoolValue: 0,
   recentTransactions: []
 };
 
@@ -108,8 +111,8 @@ async function pushStatsToGitHub() {
  * Initialize Solana connection and wallet
  */
 async function initialize() {
-  logger.info('🔥 BROTHERHOOD PROTOCOL INITIALIZING 🔥');
-  logger.info('Half for the fire, half for the family');
+  logger.info('🎰 FEEFREAK RAFFLE INITIALIZING 🎰');
+  logger.info('100% of creator fees → Random holder raffles');
   
   // Load existing stats
   loadStats();
@@ -142,8 +145,8 @@ async function initialize() {
     throw error;
   }
 
-  logger.info(`Check interval: Every ${CONFIG.checkIntervalMinutes} minutes`);
-  logger.info(`Buyback: ${CONFIG.buybackPercentage}% | Airdrops: ${CONFIG.airdropPercentage}%`);
+  logger.info(`Draw interval: Every ${CONFIG.checkIntervalMinutes} minutes`);
+  logger.info(`Winners per draw: ${CONFIG.numberOfWinners}`);
 }
 
 /**
@@ -166,41 +169,13 @@ async function getCreatorFeeBalance() {
   }
 }
 
-/**
- * Reserve SOL for manual buybacks
- * This amount stays in the creator wallet for you to manually buyback tokens
- */
-async function reserveForBuyback(solAmount) {
-  logger.info(`🔥 RESERVING FOR MANUAL BUYBACK: ${solAmount.toFixed(4)} SOL 🔥`);
-  
-  try {
-    // This SOL stays in the creator wallet
-    // You will manually use it to buyback $YMN tokens
-    logger.success(`${solAmount.toFixed(4)} SOL reserved in wallet for buybacks`);
-    logger.info(`Wallet: ${creatorKeypair.publicKey.toBase58()}`);
-    logger.info(`This SOL remains in your wallet for manual token buybacks`);
-    
-    // Update stats
-    stats.totalBuybacksSOL += solAmount;
-    
-    // Log for transparency
-    return {
-      success: true,
-      solReserved: solAmount,
-      wallet: creatorKeypair.publicKey.toBase58(),
-      message: 'SOL reserved for manual buyback'
-    };
-  } catch (error) {
-    logger.error('Failed to reserve buyback funds', { error: error.message });
-    throw error;
-  }
-}
+
 
 /**
- * Execute airdrops to random winners
+ * Execute raffle draw to random winners
  */
-async function executeAirdrops(solAmount) {
-  logger.info(`👥 EXECUTING AIRDROPS: ${solAmount.toFixed(4)} SOL 👥`);
+async function executeRaffleDraw(solAmount) {
+  logger.info(`🎰 EXECUTING RAFFLE DRAW: ${solAmount.toFixed(4)} SOL 🎰`);
   
   try {
     // Get random winners
@@ -213,7 +188,7 @@ async function executeAirdrops(solAmount) {
     });
 
     if (winners.length === 0) {
-      logger.warn('No qualified winners found. Skipping airdrops.');
+      logger.warn('No qualified holders found. Skipping draw.');
       return { success: false, reason: 'No qualified holders' };
     }
 
@@ -221,7 +196,7 @@ async function executeAirdrops(solAmount) {
     const amountPerWinner = solAmount / winners.length;
     const lamportsPerWinner = Math.floor(amountPerWinner * LAMPORTS_PER_SOL);
 
-    logger.info(`Sending ${amountPerWinner.toFixed(4)} SOL to each of ${winners.length} winner(s)`);
+    logger.info(`💰 Sending ${amountPerWinner.toFixed(4)} SOL to ${winners.length} winner(s)`);
 
     // Create and send transactions
     const results = [];
@@ -239,7 +214,7 @@ async function executeAirdrops(solAmount) {
         await connection.confirmTransaction(signature);
         
         logger.transaction(
-          `Airdrop sent to ${winner.address.slice(0, 8)}...`,
+          `🎉 Winner: ${winner.address.slice(0, 8)}...`,
           signature,
           { amount: amountPerWinner, balance: winner.balance }
         );
@@ -248,51 +223,54 @@ async function executeAirdrops(solAmount) {
         
         // Update stats for each winner
         stats.totalDistributedSOL += amountPerWinner;
+        stats.totalWinners += 1;
         stats.lastWinner = winner.address;
         
-        // Add to recent transactions (keep last 10)
+        // Add to recent transactions (keep last 20 for better feed)
         stats.recentTransactions.unshift({
-          type: 'airdrop',
+          type: 'raffle_win',
           winner: winner.address,
           amount: amountPerWinner,
           signature,
           timestamp: new Date().toISOString()
         });
-        if (stats.recentTransactions.length > 10) {
-          stats.recentTransactions = stats.recentTransactions.slice(0, 10);
+        if (stats.recentTransactions.length > 20) {
+          stats.recentTransactions = stats.recentTransactions.slice(0, 20);
         }
       } catch (error) {
-        logger.error(`Failed to send airdrop to ${winner.address}`, { error: error.message });
+        logger.error(`Failed to send prize to ${winner.address}`, { error: error.message });
       }
     }
 
     return { success: true, results };
   } catch (error) {
-    logger.error('Airdrop execution failed', { error: error.message });
+    logger.error('Raffle draw failed', { error: error.message });
     throw error;
   }
 }
 
 /**
- * Process creator fees - split and execute
+ * Process creator fees - execute raffle draw
  */
 async function processCreatorFees() {
   logger.info('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-  logger.info('🔥 CHECKING CREATOR WALLET BALANCE 🔥');
+  logger.info('🎰 CHECKING CREATOR FEE BALANCE 🎰');
   
   try {
     const { balance, pubkey } = await getCreatorFeeBalance();
+    
+    // Update current pool value in stats
+    stats.currentPoolValue = balance;
 
     if (balance < CONFIG.minBalanceToProcess) {
-      logger.info(`Balance too low (${balance.toFixed(4)} SOL < ${CONFIG.minBalanceToProcess} SOL). Skipping.`);
+      logger.info(`Balance too low (${balance.toFixed(4)} SOL < ${CONFIG.minBalanceToProcess} SOL). Skipping draw.`);
       return;
     }
 
     // Calculate how much we can use (reserve for transaction fees)
-    // We need to keep enough for airdrop transactions + buffer
-    const estimatedAirdropFees = 0.005 * CONFIG.numberOfWinners; // ~0.005 SOL per transaction
-    const bufferForSafety = 0.01;
-    const reserveForFees = estimatedAirdropFees + bufferForSafety;
+    const estimatedDrawFees = 0.005 * CONFIG.numberOfWinners; // ~0.005 SOL per transaction
+    const bufferForSafety = 0.005;
+    const reserveForFees = estimatedDrawFees + bufferForSafety;
     
     const availableBalance = balance - reserveForFees;
 
@@ -301,46 +279,46 @@ async function processCreatorFees() {
       return;
     }
 
-    // Split 50/50
-    const buybackAmount = (availableBalance * CONFIG.buybackPercentage) / 100;
-    const airdropAmount = (availableBalance * CONFIG.airdropPercentage) / 100;
+    // 100% goes to raffle winners
+    const prizePool = availableBalance;
 
-    logger.success('💎 SACRIFICE PROTOCOL ACTIVATED 💎');
+    logger.success('🎰 FEEFREAK RAFFLE DRAW 🎰');
     logger.info(`Total Balance: ${balance.toFixed(4)} SOL`);
     logger.info(`Reserved for Fees: ${reserveForFees.toFixed(4)} SOL`);
-    logger.info(`Available for Protocol: ${availableBalance.toFixed(4)} SOL`);
-    logger.info(`├─ For the Fire (Manual Buyback): ${buybackAmount.toFixed(4)} SOL`);
-    logger.info(`└─ For the Family (Airdrops): ${airdropAmount.toFixed(4)} SOL`);
+    logger.info(`Prize Pool: ${prizePool.toFixed(4)} SOL`);
 
-    // Reserve for manual buyback (stays in wallet)
-    await reserveForBuyback(buybackAmount);
+    // Execute raffle draw
+    await executeRaffleDraw(prizePool);
 
-    // Execute airdrops (sends from wallet)
-    await executeAirdrops(airdropAmount);
-
-    // Update cycle stats
-    stats.totalCycles++;
-    stats.lastCycleTime = new Date().toISOString();
+    // Update draw stats
+    stats.totalDraws++;
+    stats.lastDrawTime = new Date().toISOString();
+    stats.nextDrawTime = new Date(Date.now() + CONFIG.checkIntervalMinutes * 60 * 1000).toISOString();
+    stats.averageWinAmount = stats.totalWinners > 0 ? stats.totalDistributedSOL / stats.totalWinners : 0;
+    
+    // Update pool value after draw (should be near zero)
+    const { balance: balanceAfterDraw } = await getCreatorFeeBalance();
+    stats.currentPoolValue = balanceAfterDraw;
     
     // Save stats to file
-    saveStats();
+    await saveStats();
 
-    logger.success('✅ BROTHERHOOD PROTOCOL CYCLE COMPLETE ✅');
-    logger.info(`Remaining in wallet for buybacks: ~${buybackAmount.toFixed(4)} SOL`);
+    logger.success('✅ RAFFLE DRAW COMPLETE ✅');
   } catch (error) {
-    logger.error('Failed to process creator fees', { error: error.message });
+    logger.error('Failed to process raffle draw', { error: error.message });
   }
   
   logger.info('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
 }
 
 /**
- * Start the monitoring loop
+ * Start the raffle loop
  */
 async function start() {
   await initialize();
   
-  logger.success('🚀 BROTHERHOOD PROTOCOL RUNNING 🚀');
+  logger.success('🚀 FEEFREAK RAFFLE RUNNING 🚀');
+  logger.info(`Next draw: Every ${CONFIG.checkIntervalMinutes} minutes`);
   
   // Run immediately on start
   await processCreatorFees();
@@ -354,11 +332,11 @@ async function start() {
 
 // Handle graceful shutdown
 process.on('SIGINT', () => {
-  logger.info('Brotherhood Protocol shutting down...');
+  logger.info('FeeFreak Raffle shutting down...');
   process.exit(0);
 });
 
-// Start the protocol
+// Start the raffle
 start().catch(error => {
   logger.error('Fatal error', { error: error.message });
   process.exit(1);

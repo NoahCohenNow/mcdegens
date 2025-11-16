@@ -3,160 +3,366 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to McDegens</title>
+    <title>Grocery Coin | Neo-Brutalist Payout Token</title>
     <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Load Inter font -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
     <style>
-        /* Apply Inter font to the body */
+        /* --- Custom Styles for Neo-Brutalism --- */
+        @import url('https://fonts.googleapis.com/css2?family=Chivo+Mono:ital,wght@0,100..900;1,100..900&family=Oswald:wght@200..700&display=swap');
+        
+        /* Base: Monospaced, high-contrast black/yellow/red palette */
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Chivo Mono', monospace;
+            background-color: #f7f7f7; /* Off-white / light gray base */
+            color: #1a1a1a; /* Near-black text */
+            scroll-behavior: smooth;
         }
+
+        /* --- Global Box Shadow (Key Brutalist Feature) --- */
+        .brutal-shadow {
+            /* Harsh, non-blurry, offset shadow in a bright accent color */
+            box-shadow: 8px 8px 0px 0px #ff0055; /* Hot Pink/Red */
+            transition: all 0.1s ease-in-out;
+        }
+        
+        .brutal-shadow-yellow {
+            box-shadow: 6px 6px 0px 0px #f9ff00; /* Neon Yellow */
+            transition: all 0.1s ease-in-out;
+        }
+
+        .brutal-border {
+            border: 4px solid #1a1a1a; /* Heavy, mandatory borders */
+        }
+
+        /* Hover Effect for Buttons/Cards */
+        .brutal-shadow:hover {
+            box-shadow: 12px 12px 0px 0px #ff0055;
+            transform: translate(-4px, -4px);
+        }
+
+        /* Hero Text Style (Oswald is aggressive) */
+        .hero-title {
+            font-family: 'Oswald', sans-serif;
+            font-weight: 700;
+            letter-spacing: -4px;
+            text-shadow: 4px 4px 0px #ff0055;
+            line-height: 0.85;
+        }
+
+        /* --- Scroll Animation (Fast, Janky Reveal) --- */
+        .animate-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s cubic-bezier(0.17, 0.67, 0.83, 0.67); /* Janky, non-smooth curve */
+        }
+        .is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Utility Card Hover */
+        .card-hover:hover .brutal-shadow-yellow {
+            box-shadow: 10px 10px 0px 0px #f9ff00;
+            transform: translate(-4px, -4px);
+        }
+        
     </style>
+</head>
+<body>
+
+    <!-- Header / Navigation (Fixed and High-Contrast) -->
+    <header class="sticky top-0 z-50 p-4 bg-f7f7f7 brutal-border border-b-4">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <h1 class="text-3xl font-extrabold tracking-widest uppercase">
+                <span class="text-[#ff0055]">GC</span>-COIN_
+            </h1>
+            <nav class="hidden md:flex space-x-6 text-sm font-bold">
+                <a href="#utility" class="hover:text-[#ff0055] transition duration-100">UTILITY</a>
+                <a href="#stats" class="hover:text-[#ff0055] transition duration-100">STATS_</a>
+                <a href="#buy" class="hover:text-[#ff0055] transition duration-100">BUY</a>
+            </nav>
+            <a href="https://pump.fun/coin/2v4Mbujub22n6wjQzEhawV4mrG9G12Z7aTrdhcbJpump" target="_blank" class="bg-[#f9ff00] text-[#1a1a1a] font-bold py-2 px-6 brutal-shadow brutal-border text-sm uppercase">
+                PUMP IT
+            </a>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 py-16">
+
+        <!-- 1. Hero Section -->
+        <section class="py-10 md:py-20 text-center animate-in">
+            <div class="max-w-4xl mx-auto">
+                <p class="text-sm md:text-base font-mono mb-2 text-[#1a1a1a] font-bold tracking-widest uppercase">
+                    Contract Address: <span id="contractAddress" class="bg-[#f9ff00] px-2 py-1 brutal-border text-xs select-all cursor-pointer hover:bg-[#ffff33]" onclick="navigator.clipboard.writeText('coming soon')">coming soon</span>
+                </p>
+                <p class="text-lg font-mono mb-4 text-[#ff0055] font-bold tracking-widest">The first memecoin designed to actually help people pay their bills                </p>
+                <h2 class="hero-title text-8xl sm:text-9xl md:text-[150px] lg:text-[180px] uppercase mb-4">
+                    GROCERY<br>COIN
+                </h2>
+                <p class="text-xl md:text-2xl font-bold brutal-border p-4 bg-yellow-200 inline-block mt-8">
+                    100% Creator Fees Paid to 1 Holder Every 5 Minutes to pay their bills. Win the pool. Buy your groceries. Touch grass. Repeat.
+                </p>
+            </div>
+        </section>
+
+        <!-- Separator Bar -->
+        <div class="my-12 h-1 bg-[#ff0055] brutal-border"></div>
+
+
+        <!-- 2. Core Utility Section (The Mechanism) -->
+        <section id="utility" class="py-10 md:py-20">
+            <h3 class="text-4xl font-bold mb-10 text-center uppercase brutal-border bg-gray-300 p-2 brutal-shadow">
+                THE MECHANISM_
+            </h3>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+
+                <!-- Card 1: Fees Funnel -->
+                <div class="animate-in delay-200">
+                    <div class="bg-gray-100 p-6 brutal-border brutal-shadow-yellow card-hover h-full">
+                        <div class="text-6xl mb-4 font-black text-[#ff0055]">1.</div>
+                        <p class="text-xl font-bold mb-2 uppercase">FEE POOL</p>
+                        <p class="text-sm">All fees skip the creator wallet and are redirected instantly to the live prize pool. Transparent and non-negotiable.</p>
+                        <p class="mt-4 text-xs font-bold text-[#ff0055]">STATUS: ACTIVE</p>
+                    </div>
+                </div>
+
+                <!-- Card 2: Random Selection -->
+                <div class="animate-in delay-300">
+                    <div class="bg-gray-100 p-6 brutal-border brutal-shadow-yellow card-hover h-full">
+                        <div class="text-6xl mb-4 font-black text-[#ff0055]">2.</div>
+                        <p class="text-xl font-bold mb-2 uppercase">RANDOM TRIGGER</p>
+                        <p class="text-sm">Every 300 seconds, the on-chain randomizer fires. No influence. No funny business. Just pure chance.</p>
+                        <p class="mt-4 text-xs font-bold text-[#f9ff00]">WARNING: HIGH VOLATILITY</p>
+                    </div>
+                </div>
+
+                <!-- Card 3: Instant Distribution -->
+                <div class="animate-in delay-400">
+                    <div class="bg-gray-100 p-6 brutal-border brutal-shadow-yellow card-hover h-full">
+                        <div class="text-6xl mb-4 font-black text-[#ff0055]">3.</div>
+                        <p class="text-xl font-bold mb-2 uppercase">PAYOUT</p>
+                        <p class="text-sm">The single winning wallet receives the entire pool value. Direct. Immediate. No intermediary.</p>
+                        <p class="mt-4 text-xs font-bold text-[#ff0055]">SYSTEM OK: TRANSFER COMPLETE</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Separator Bar -->
+        <div class="my-12 h-1 bg-[#f9ff00] brutal-border"></div>
+
+
+        <!-- 3. Live Stats & Timer Section -->
+        <section id="stats" class="py-10 md:py-20">
+            <h3 class="text-4xl font-bold mb-10 text-center uppercase brutal-border bg-gray-300 p-2 brutal-shadow-yellow">
+                LIVE DATA FEED
+            </h3>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                
+                <!-- Countdown Timer Panel -->
+                <div class="lg:col-span-2 bg-gray-100 p-8 brutal-border brutal-shadow animate-in delay-500">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 border-b-4 border-dashed border-[#1a1a1a] pb-4">
+                        <p class="text-xl font-bold uppercase text-[#ff0055]">NEXT PAYOUT IN:</p>
+                        <!-- Countdown Timer Display -->
+                        <div id="countdown" class="text-7xl md:text-8xl font-black text-[#f9ff00] brutal-border bg-[#1a1a1a] p-2 mt-4 md:mt-0">
+                            --:--
+                        </div>
+                    </div>
+
+                    <div class="flex justify-between items-center mb-6">
+                        <p class="text-xl font-bold uppercase">CURRENT POOL VALUE</p>
+                        <p id="poolValue" class="text-4xl font-black text-[#ff0055]">Loading...</p>
+                    </div>
+                    
+                    <p class="text-sm text-gray-700">LAST WINNER ADDRESS: <span id="lastWinner" class="font-mono text-[#1a1a1a] bg-yellow-200 px-1 brutal-shadow-yellow">Loading...</span></p>
+                </div>
+
+                <!-- Tokenomics / Key Figures -->
+                <div class="bg-gray-100 p-8 brutal-border brutal-shadow-yellow animate-in delay-600">
+                    <h4 class="text-2xl font-bold uppercase mb-6 border-b-2 border-gray-500 pb-2">TOKEN STATS_</h4>
+                    <dl class="space-y-4">
+                        <div class="flex justify-between items-center">
+                            <dt class="text-sm font-bold">TOTAL DRAWS</dt>
+                            <dd id="totalDraws" class="text-lg font-black text-[#ff0055]">0</dd>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <dt class="text-sm font-bold">TOTAL WINNERS</dt>
+                            <dd id="totalWinners" class="text-lg font-black text-[#ff0055]">0</dd>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <dt class="text-sm font-bold">TOTAL PAID OUT</dt>
+                            <dd id="totalDistributed" class="text-lg font-black text-[#f9ff00]">0 SOL</dd>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <dt class="text-sm font-bold">AVG WIN</dt>
+                            <dd id="avgWin" class="text-lg font-black text-[#ff0055]">0 SOL</dd>
+                        </div>
+                        <div class="pt-4 border-t border-dashed border-gray-500">
+                            <dt class="text-sm font-bold block mb-1">CONTRACT_ID:</dt>
+                            <dd class="text-xs font-mono text-[#1a1a1a] bg-yellow-200 p-1 block select-all break-all brutal-shadow-yellow">
+                                Coming Soon...
+                            </dd>
+                        </div>
+                    </dl>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. How to Buy Section -->
+        <section id="buy" class="py-10 md:py-20 text-center">
+            <h3 class="text-4xl font-bold mb-10 uppercase brutal-border bg-gray-300 p-2 brutal-shadow">
+                HOW TO GET GROCERY COIN
+            </h3>
+            <div class="bg-[#1a1a1a] text-gray-50 p-8 md:p-12 brutal-border brutal-shadow-yellow max-w-5xl mx-auto animate-in delay-700">
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                    
+                    <div class="p-4 border-4 border-[#ff0055] bg-gray-900">
+                        <span class="text-6xl font-black text-[#f9ff00]">01</span>
+                        <p class="text-xl font-bold mt-2 mb-1 uppercase text-[#ff0055]">ACQUIRE SOL</p>
+                        <p class="text-xs text-gray-300">You need Solana in a compatible wallet (Phantom, etc.). No SOL, no PUMP.</p>
+                    </div>
+                    
+                    <div class="p-4 border-4 border-[#ff0055] bg-gray-900">
+                        <span class="text-6xl font-black text-[#f9ff00]">02</span>
+                        <p class="text-xl font-bold mt-2 mb-1 uppercase text-[#ff0055]">GO TO PUMP.FUN</p>
+                        <p class="text-xs text-gray-300">Find Grocery Coin using the Contract ID above. Use the official link.</p>
+                    </div>
+                    
+                    <div class="p-4 border-4 border-[#ff0055] bg-gray-900">
+                        <span class="text-6xl font-black text-[#f9ff00]">03</span>
+                        <p class="text-xl font-bold mt-2 mb-1 uppercase text-[#ff0055]">EXECUTE SWAP</p>
+                        <p class="text-xs text-gray-300">Swap SOL for GC. Now you are eligible for the 5-minute payout cycle.</p>
+                    </div>
+                </div>
+
+                <a href="https://pump.fun/coin/2v4Mbujub22n6wjQzEhawV4mrG9G12Z7aTrdhcbJpump" target="_blank" class="mt-12 inline-block text-xl font-bold py-4 px-12 brutal-border brutal-shadow bg-[#f9ff00] text-[#1a1a1a] uppercase hover:bg-yellow-300">
+                    ACCESS THE PUMP
+                </a>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="py-8 mt-16 text-center brutal-border border-t-4 bg-gray-200">
+        <p class="font-bold text-sm">GC-COIN. BUILT ON SOLANA. NO WARRANTIES.</p>
+        <div class="mt-2 text-xs font-mono">
+            <a href="https://solscan.io/account/Axhrtvzw6EnSxbonFu5FPmknFnjksoDxfoWaAd3ABDu7" target="_blank" class="hover:text-[#ff0055] mx-2">TRANSACTION HISTORY_</a> | 
+            <a href="https://github.com/klingon-droid/yomyninja" target="_blank" class="hover:text-[#ff0055] mx-2">CODE_</a>
+        </div>
+    </footer>
+
+
     <script>
-        // Fetch and display stats from stats.json
+        // --- Custom JavaScript for Janky Scroll Reveal and Live Data Integration ---
+
+        // 1. Intersection Observer for Scroll Reveal (Janky animation)
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // Force the immediate transition to emphasize the brutalist feel
+                    setTimeout(() => {
+                        entry.target.classList.add('is-visible');
+                        observer.unobserve(entry.target); // Stop observing once visible
+                    }, 50); // Small delay to make it slightly jarring
+                }
+            });
+        }, { 
+            rootMargin: '0px',
+            threshold: 0.05 // Trigger when 5% of the element is visible
+        });
+
+        // Attach observer to all elements with 'animate-in' class
+        document.querySelectorAll('.animate-in').forEach(element => {
+            observer.observe(element);
+        });
+
+        // 2. Load real stats from stats.json and update UI
+        let nextDrawTime = null;
+        let checkInterval = 5 * 60 * 1000; // Default 5 minutes in milliseconds
+
         async function loadStats() {
             try {
                 const response = await fetch('stats.json');
                 const data = await response.json();
                 
-                // Update Total Buybacks
-                document.getElementById('totalBuybacks').textContent = 
-                    `${data.totalBuybacksSOL.toFixed(4)} SOL`;
-                
-                // Update Total Distributed
-                document.getElementById('totalDistributed').textContent = 
-                    data.totalDistributedSOL > 0 
-                        ? `${data.totalDistributedSOL.toFixed(4)} SOL` 
+                // Update pool value - current balance from fee wallet
+                document.getElementById('poolValue').textContent = 
+                    data.currentPoolValue !== undefined 
+                        ? `${data.currentPoolValue.toFixed(4)} SOL` 
                         : 'Coming Soon';
                 
-                // Update Last Winner
+                // Update last winner
                 document.getElementById('lastWinner').textContent = 
                     data.lastWinner 
                         ? `${data.lastWinner.slice(0, 4)}...${data.lastWinner.slice(-4)}` 
-                        : 'Coming Soon';
+                        : 'Waiting...';
                 
-                // Update Next Ritual (simple countdown or text)
-                document.getElementById('nextRitual').textContent = 'Any moment...';
+                // Update total stats
+                document.getElementById('totalDraws').textContent = data.totalDraws || 0;
+                document.getElementById('totalWinners').textContent = data.totalWinners || 0;
+                document.getElementById('totalDistributed').textContent = 
+                    data.totalDistributedSOL 
+                        ? `${data.totalDistributedSOL.toFixed(4)} SOL` 
+                        : '0 SOL';
+                document.getElementById('avgWin').textContent = 
+                    data.averageWinAmount 
+                        ? `${data.averageWinAmount.toFixed(4)} SOL` 
+                        : '0 SOL';
+                
+                // Set next draw time if available
+                if (data.nextDrawTime) {
+                    nextDrawTime = new Date(data.nextDrawTime);
+                }
                 
             } catch (error) {
                 console.error('Failed to load stats:', error);
-                document.getElementById('totalBuybacks').textContent = 'Error loading';
-                document.getElementById('totalDistributed').textContent = 'Error loading';
-                document.getElementById('lastWinner').textContent = 'Error loading';
-                document.getElementById('nextRitual').textContent = 'Error loading';
+                document.getElementById('poolValue').textContent = 'Error';
+                document.getElementById('lastWinner').textContent = 'Error';
             }
         }
+
+        // 3. Countdown timer
+        function updateCountdown() {
+            const countdownEl = document.getElementById('countdown');
+            
+            if (!nextDrawTime) {
+                countdownEl.textContent = '--:--';
+                return;
+            }
+            
+            const now = new Date();
+            const timeLeft = Math.max(0, nextDrawTime - now);
+            
+            if (timeLeft === 0) {
+                // Draw should have happened, reload stats
+                loadStats();
+                countdownEl.textContent = '--:--';
+                return;
+            }
+            
+            const totalSeconds = Math.floor(timeLeft / 1000);
+            const minutes = String(Math.floor(totalSeconds / 60)).padStart(2, '0');
+            const seconds = String(totalSeconds % 60).padStart(2, '0');
+            
+            countdownEl.textContent = `${minutes}:${seconds}`;
+        }
+
+        // Initialize on page load
+        window.addEventListener('DOMContentLoaded', async () => {
+            await loadStats();
+            updateCountdown();
+        });
         
-        // Load stats when page loads
-        window.addEventListener('DOMContentLoaded', loadStats);
+        // Update countdown every second
+        setInterval(updateCountdown, 1000);
         
-        // Reload stats every 30 seconds
+        // Reload stats every 30 seconds to get fresh data
         setInterval(loadStats, 30000);
+        
     </script>
-</head>
-<body class="bg-red-600">
-
-    <!-- Main container -->
-    <div class="min-h-screen w-full flex flex-col items-center justify-center p-4 text-center text-white overflow-hidden">
-
-        <!-- Logo -->
-        <div class="mb-4">
-            <!-- Stylized 'M' logo -->
-            <svg class="w-32 h-auto text-yellow-400" fill="currentColor" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-              <path d="M10,90 Q10,20 30,20 Q50,20 50,50 Q50,20 70,20 Q90,20 90,90 L75,90 Q75,40 65,40 Q55,40 55,60 L50,70 L45,60 Q45,40 35,40 Q25,40 25,90 L10,90 Z" />
-            </svg>
-        </div>
-
-        <!-- Main Headline -->
-        <h1 class="text-4xl md:text-6xl font-black uppercase tracking-tight mb-2">
-            Time to clock in.
-        </h1>
-        <p class="text-xl md:text-2xl font-light text-yellow-300 mb-8">
-            BTC and SOL got you filling out applications?
-        </p>
-
-        <!-- Main Content Box (Neo-Brutalist) -->
-        <div class="bg-white text-gray-900 rounded-lg shadow-[8px_8px_0px_#000] border-4 border-black p-6 md:p-8 max-w-lg w-full mx-auto">
-            
-            <h2 class="text-2xl font-extrabold mb-4 text-black">Welcome to your new shift.</h2>
-            
-            <p class="text-gray-900 font-medium mb-6 text-left">
-                Rough week? Did Bitcoin send your portfolio to the dumpster? Did we just watch Solana just go under $150?
-                <br><br>
-                It's okay. We get it. The charts were a bloodbath. But don't worry, we've got a new position for you. Welcome to <span class="font-bold text-red-700">McDegens</span>.
-            </p>
-
-            <!-- Tokenomics Section (Neo-Brutalist) -->
-            <div class="bg-yellow-400 rounded-md p-4 mb-6 text-left border-2 border-black">
-                <h3 class="text-lg font-extrabold text-black mb-3">Employee Benefits Plan:</h3>
-                <ul class="space-y-3">
-                    <li class="flex items-start font-medium">
-                        <span class="text-xl mr-2">🍟</span>
-                        <div>
-                            <span class="font-bold">50% of creator fees</span> from pump.fun will be airdropped to all our loyal employees (that's you, the holders).
-                        </div>
-                    </li>
-                    <li class="flex items-start font-medium">
-                        <span class="text-xl mr-2">🍔</span>
-                        <div>
-                            <span class="font-bold">50% of creator fees</span> will be used to buy back the chart. We're our own best customer.
-                        </div>
-                    </li>
-                </ul>
-            </div>
-
-            <!-- Stats Grid (Neo-Brutalist) -->
-            <div class="grid grid-cols-2 gap-3 mb-6">
-                <div class="bg-black text-white p-4 rounded-md border-2 border-black">
-                    <div class="text-xs font-bold text-yellow-400 uppercase mb-1">Total Buybacks</div>
-                    <div class="text-xl font-black" id="totalBuybacks">Loading...</div>
-                </div>
-                <div class="bg-black text-white p-4 rounded-md border-2 border-black">
-                    <div class="text-xs font-bold text-yellow-400 uppercase mb-1">Total Distributed</div>
-                    <div class="text-xl font-black" id="totalDistributed">Loading...</div>
-                </div>
-                <div class="bg-black text-white p-4 rounded-md border-2 border-black">
-                    <div class="text-xs font-bold text-yellow-400 uppercase mb-1">Last Winner</div>
-                    <div class="text-sm font-bold truncate" id="lastWinner">Loading...</div>
-                </div>
-                <div class="bg-black text-white p-4 rounded-md border-2 border-black">
-                    <div class="text-xs font-bold text-yellow-400 uppercase mb-1">Next Paycheck</div>
-                    <div class="text-sm font-bold" id="nextRitual">Loading...</div>
-                </div>
-            </div>
-
-            <!-- Transaction History Link -->
-            <a href="https://solscan.io/account/Axhrtvzw6EnSxbonFu5FPmknFnjksoDxfoWaAd3ABDu7" 
-               target="_blank" 
-               rel="noopener noreferrer"
-               class="block text-center text-sm font-bold text-gray-700 hover:text-black mb-6 underline">
-                View Full Transaction History →
-            </a>
-
-            <!-- Call to Action Button (Neo-Brutalist) -->
-            <a href="https://pump.fun/coin/2v4Mbujub22n6wjQzEhawV4mrG9G12Z7aTrdhcbJpump" 
-               target="_blank" 
-               rel="noopener noreferrer"
-               class="inline-block w-full bg-yellow-400 text-black text-2xl font-black uppercase py-4 px-8 rounded-lg border-4 border-black shadow-[4px_4px_0px_#000] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all duration-200">
-                Get Your Uniform
-                <br>
-                <span class="text-sm normal-case font-bold">(Buy $MCDGN)</span>
-            </a>
-
-        </div>
-
-        <!-- Footer -->
-        <div class="mt-8 text-white text-xs opacity-90 max-w-lg mx-auto">
-            <p>
-                This is a memecoin for entertainment purposes. Not financial advice. We are not affiliated with McDonald's Corporation or any fast-food establishment. DYOR.
-            </p>
-        </div>
-
-    </div>
-
 </body>
 </html>

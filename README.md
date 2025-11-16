@@ -1,17 +1,19 @@
-# 🍔 McDegens Protocol
+# 🛒 Grocery Coin Protocol
 
-**Time to clock in. We're our own best customer.**
+**The first memecoin designed to actually help people pay their bills.**
 
-Automated buyback and airdrop system for $MCDGN token that processes Pump.fun creator fees.
+Automated random payout system for Grocery Coin that processes Pump.fun creator fees and distributes 100% to one lucky holder every 5 minutes.
 
 ## 🎯 What It Does
 
 This tool automatically:
-1. **Monitors** your Pump.fun creator fee wallet every X minutes
-2. **Splits** collected fees 50/50:
-   - 🔥 **50% for Buybacks** - Reserved for buying back $MCDGN to support the chart
-   - 👥 **50% for Airdrops** - Rewards random qualified token holders (our employees)
-3. **Logs** all transactions for complete transparency
+1. **Monitors** your Pump.fun creator fee wallet every 5 minutes
+2. **Collects** 100% of creator fees into a prize pool
+3. **Randomly selects** one qualified token holder
+4. **Distributes** the entire pool to that single winner
+5. **Logs** all transactions for complete transparency
+
+Win the pool. Buy your groceries. Touch grass. Repeat.
 
 ## 🚀 Setup
 
@@ -35,13 +37,15 @@ Edit `.env` with your values:
 # Required
 HELIUS_RPC_URL=https://mainnet.helius-rpc.com/?api-key=YOUR_HELIUS_API_KEY
 CREATOR_WALLET_PRIVATE_KEY=your_base58_private_key_here
-YMN_TOKEN_MINT=your_mcdgn_token_mint_address_here
+YMN_TOKEN_MINT=your_grocery_coin_token_mint_address_here
 
 # Optional - defaults shown
-CHECK_INTERVAL_MINUTES=10
-MIN_BALANCE_TO_PROCESS=0.1
-BUYBACK_PERCENTAGE=50
-AIRDROP_PERCENTAGE=50
+CHECK_INTERVAL_MINUTES=5
+MIN_BALANCE_TO_PROCESS=0.01
+BUYBACK_PERCENTAGE=0
+AIRDROP_PERCENTAGE=100
+NUMBER_OF_WINNERS_PER_ROUND=1
+MIN_HOLDER_BALANCE=100
 ```
 
 ### 3. Get Your Private Key
@@ -59,8 +63,6 @@ From Phantom or Solflare:
 2. Create a new project
 3. Copy your mainnet RPC URL
 4. Paste into `HELIUS_RPC_URL`
-
-You already have: `https://mainnet.helius-rpc.com/?api-key=YOUR_KEY`
 
 ### 5. Get Your Token Mint Address
 
@@ -100,7 +102,7 @@ npm start
 ### Run in Background (Linux/Mac)
 
 ```bash
-nohup npm start > mcdegens.log 2>&1 &
+nohup npm start > grocery-coin.log 2>&1 &
 ```
 
 ### Stop Background Process
@@ -111,35 +113,44 @@ pkill -f "node index.js"
 
 ## 📊 How It Works
 
+### The Mechanism
+
+1. **Fee Pool**
+   - All creator fees skip the creator wallet
+   - Fees are redirected instantly to the live prize pool
+   - Transparent and non-negotiable
+
+2. **Random Trigger**
+   - Every 300 seconds (5 minutes), the on-chain randomizer fires
+   - No influence. No funny business. Just pure chance.
+
+3. **Payout**
+   - The single winning wallet receives the entire pool value
+   - Direct. Immediate. No intermediary.
+
 ### Fee Collection
-- Checks creator fee wallet every `CHECK_INTERVAL_MINUTES`
+- Checks creator fee wallet every 5 minutes
 - Only processes if balance ≥ `MIN_BALANCE_TO_PROCESS` SOL
 - Reserves 0.01 SOL for transaction fees
 
-### Buybacks (50%)
-- **Reserves** 50% of fees in your creator wallet
-- You manually use this SOL to buyback $MCDGN tokens
-- SOL stays in wallet - script just logs the amount reserved
-- Provides transparency on how much is available for buybacks
-
-### Airdrops (50%)
+### Winner Selection
 - Fetches all token holders via Helius
 - Filters by minimum balance (`MIN_HOLDER_BALANCE`)
 - Excludes creator wallet
-- Randomly selects `NUMBER_OF_WINNERS_PER_ROUND` winners (our employees)
-- Distributes SOL equally to winners
+- Randomly selects 1 winner per round
+- Distributes 100% of pool to winner
 - Logs all transactions with Solscan links
 
 ### Stats Tracking
 - Updates `stats.json` after each cycle
-- Tracks total buybacks, distributions, winners, and recent transactions
+- Tracks total draws, winners, total distributed, and average win
 - Auto-pushes to GitHub if configured
 - Landing page fetches and displays stats in real-time
 
 ## 📁 Project Structure
 
 ```
-├── index.html            # McDegens landing page
+├── index.html            # Grocery Coin landing page (Neo-brutalist design)
 ├── index.js              # Main protocol logic
 ├── stats.json            # Live stats (auto-updated)
 ├── utils/
@@ -155,7 +166,7 @@ pkill -f "node index.js"
 
 Logs are written to:
 - **Console**: Colorized real-time output
-- **Files**: `logs/brotherhood-YYYY-MM-DD.log` (if `LOG_TO_FILE=true`)
+- **Files**: `logs/grocery-coin-YYYY-MM-DD.log` (if `LOG_TO_FILE=true`)
 
 Each log includes:
 - Timestamp
@@ -167,22 +178,29 @@ Each log includes:
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `CHECK_INTERVAL_MINUTES` | 10 | How often to check for fees |
-| `MIN_BALANCE_TO_PROCESS` | 0.1 | Minimum SOL to trigger processing |
-| `BUYBACK_PERCENTAGE` | 50 | % of fees for buybacks |
-| `AIRDROP_PERCENTAGE` | 50 | % of fees for airdrops |
+| `CHECK_INTERVAL_MINUTES` | 5 | How often to check for fees |
+| `MIN_BALANCE_TO_PROCESS` | 0.01 | Minimum SOL to trigger processing |
+| `BUYBACK_PERCENTAGE` | 0 | % of fees for buybacks (unused) |
+| `AIRDROP_PERCENTAGE` | 100 | % of fees for distribution |
 | `MIN_HOLDERS_FOR_AIRDROP` | 10 | Minimum holders required |
-| `NUMBER_OF_WINNERS_PER_ROUND` | 1 | Winners per airdrop cycle |
+| `NUMBER_OF_WINNERS_PER_ROUND` | 1 | Winners per cycle (always 1) |
 | `MIN_HOLDER_BALANCE` | 100 | Minimum tokens to qualify |
-| `SLIPPAGE_BPS` | 300 | Slippage tolerance (3%) |
 
 ## 🌐 Landing Page
 
 The `index.html` file is a static landing page that:
 - Displays live stats from `stats.json`
-- Shows total buybacks, distributions, and last winner
-- Links to Solscan for full transaction history
-- Features neo-brutalist design with McDonald's-inspired branding
+- Shows countdown timer to next payout
+- Displays current pool value and last winner
+- Links to Solscan for transaction history
+- Features neo-brutalist design with Chivo Mono and Oswald fonts
+- Responsive layout with Tailwind CSS
+
+### Design Features
+- **Neo-brutalist aesthetic**: Heavy borders, harsh shadows, high contrast
+- **Color scheme**: Off-white background, hot pink/red accents, neon yellow highlights, black borders
+- **Typography**: Chivo Mono (monospace) for body, Oswald (aggressive sans-serif) for headings
+- **Animations**: Janky, non-smooth scroll reveals and hover effects
 
 ### Deploying the Landing Page
 
@@ -200,16 +218,15 @@ The `index.html` file is a static landing page that:
 3. **Netlify** (Free):
    - Drag and drop the repo folder to [netlify.com/drop](https://netlify.com/drop)
 
-The landing page automatically refreshes stats every 30 seconds.
+The landing page automatically refreshes stats every 30 seconds and updates the countdown timer every second.
 
 ## ⚠️ Important Notes
 
-### Manual Buybacks
-The buyback portion (50%) stays in your creator wallet:
-- Script logs how much SOL is reserved for buybacks
-- You manually use this SOL to buyback $MCDGN tokens on pump.fun or DEX
-- Provides flexibility and control over timing/price
-- Keeps process transparent for community
+### 100% Payout Model
+- NO buybacks - 100% of fees go to winners
+- One winner takes all each cycle
+- Creates maximum excitement and volatility
+- Holder participation incentivizes buying and holding
 
 ### Security
 - **Never** commit `.env` to version control
@@ -222,7 +239,7 @@ The buyback portion (50%) stays in your creator wallet:
 - Check logs in `logs/` folder
 - Share Solscan links with community
 - Stats are public on your landing page
-- Consider posting weekly reports
+- Consider posting winner announcements
 
 ## 🛠️ Troubleshooting
 
@@ -253,14 +270,14 @@ The buyback portion (50%) stays in your creator wallet:
 
 MIT
 
-## 🍟 McDegens
+## 🛒 Grocery Coin
 
-Welcome to your new shift.
+100% Creator Fees Paid to 1 Holder Every 5 Minutes.
 
-Did Bitcoin send your portfolio to the dumpster? Did Solana forget to "sol" up?
+Win the pool. Buy your groceries. Touch grass. Repeat.
 
-It's okay. We've got a new position for you at McDegens. 50% of creator fees get airdropped to our loyal employees (holders). 50% goes to buying back the chart. We're our own best customer.
+Built on Solana. No warranties.
 
 ---
 
-*This tool is for the $MCDGN community. Use responsibly and transparently.*
+*This tool is for the Grocery Coin community. Use responsibly and transparently.*
